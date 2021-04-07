@@ -1,0 +1,64 @@
+DATA:
+  cifar_root_dir: /home/min9813/project/data/cifar-10-batches-py
+  cifar_meta_file: batches.meta
+  cifar_train_reg_exp: data_batch*[1|2|3|4|5]
+  cifar_val_reg_exp: test_batch
+  cifar_test_reg_exp: test_batch
+
+  cifar_train_class: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  cifar_val_class: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+  cifar_test_class: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+
+  input_w: 32
+  input_h: 32
+
+  trn_batch_size: 512
+  val_batch_size: 512
+
+  use_weak_s_aug: False
+  use_strong_s_aug: False
+  use_c_aug: False
+
+  mean: [0.5, 0.5, 0.5]
+  std: [0.5, 0.5, 0.5]
+
+TRAIN:
+  total_epoch: 200
+  need_cls_loss: True
+  need_lda_cls_loss: True
+
+
+OPTIM:
+  optimizer: adam
+  lr: 0.001
+  lr_scheduler: "no"
+  lr_reduce_mode: max
+  lr_gamma: 0.1
+  lr_patience: 5
+  lr_min: 0.000001
+  lr_cooldown: 1
+
+LOG:
+  save_dir: ../logs
+  train_print_iter: 100
+
+MODEL:
+  save_dir: ../models
+  resume_net_path: ""  
+  resume_opt_path: ""
+  resume: False
+  network: resnet18
+  delete_old: False
+
+  embedding: lda
+  
+TEST:
+  metric_name: top1
+  mode: knn
+  has_same: False
+  batch_size: 10000
+  neighbor_k: 200
+  test_logit_scale: 4
+
+debug: False
+fp16: False

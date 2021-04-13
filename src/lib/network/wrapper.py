@@ -60,6 +60,9 @@ class LossWrap(torch.nn.Module):
                         # v=v
                     )
                     # logit = logit.clamp(min=5e-4, max=1-5e-4).log()
+                    # print(logit.shape)
+                    # print(this_labels)
+                    # sfa
                     lda_cls_loss = self.criterion(logit, this_labels)
 
                     with torch.no_grad():

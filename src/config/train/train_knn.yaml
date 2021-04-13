@@ -46,7 +46,7 @@ MODEL:
   resume_opt_path: ""
   resume: False
   network: resnet18
-  delete_old: False
+  delete_old: True
   
 TEST:
   metric_name: top1

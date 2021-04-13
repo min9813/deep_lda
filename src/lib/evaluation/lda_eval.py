@@ -23,21 +23,27 @@ def lda_eval(x_data, y_data, x_test, y_test, args, logger, has_same=False):
             need_v=True
         )
 
-        transformed_train_feats = torch.mm(x_data, v)
-        transformed_test_feats = torch.mm(x_test, v)
+        knn_scores_all = {}
+
+        for num_dim in [1, 2, 3, 5, v.shape[1]]:
+            transformed_train_feats = torch.mm(x_data, v[:, -num_dim:])
+            transformed_test_feats = torch.mm(x_test, v[:, -num_dim:])
 
         # print(transformed_train_feats.shape)
         # print(transformed_test_feats.shape)
         # sfa
 
-        knn_scores = knn_eval.knn_eval(
-            x_data=transformed_train_feats,
-            y_data=y_data,
-            x_test=transformed_test_feats,
-            y_test=y_test,
-            args=args,
-            logger=logger
-        )
+            knn_scores = knn_eval.knn_eval(
+                x_data=transformed_train_feats,
+                y_data=y_data,
+                x_test=transformed_test_feats,
+                y_test=y_test,
+                args=args,
+                logger=logger
+            )
+
+            for key, score in knn_scores.items():
+                knn_scores_all["{}_projected_{}".format(key, num_dim)] = score
 
         _, pred = torch.max(logits, dim=1)
         acc = np.mean(pred.numpy() == labels.numpy())
@@ -46,7 +52,8 @@ def lda_eval(x_data, y_data, x_test, y_test, args, logger, has_same=False):
         "top1_acc": acc
     }
 
-    for key, score in knn_scores.items():
-        scores["{}_projected".format(key)] = score
+    scores.update(knn_scores_all)
+
+
 
     return scores

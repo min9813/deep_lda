@@ -200,7 +200,7 @@ def train():
         if args.OPTIM.optimizer == "adam":
             optimizer = torch.optim.Adam(
                 net.parameters(), lr=args.OPTIM.lr, weight_decay=1e-4)
-        elif args.TRAIN.optimizer == "sgd":
+        elif args.OPTIM.optimizer == "sgd":
             optimizer = torch.optim.SGD(net.parameters(
             ), lr=args.OPTIM.lr, nesterov=True, momentum=0.9, weight_decay=1e-4)
         else:
@@ -221,6 +221,11 @@ def train():
             milestones = args.OPTIM.lr_milestones
             scheduler = lr_scheduler.MultiStepLR(
                 optimizer, milestones=milestones, gamma=args.OPTIM.lr_gamma, last_epoch=-1)
+        
+        elif args.OPTIM.lr_scheduler == 'step':
+            scheduler = lr_scheduler.StepLR(
+                optimizer, step_size=args.OPTIM.lr_step_size, gamma=args.OPTIM.lr_gamma, last_epoch=-1)
+        
         elif args.OPTIM.lr_scheduler == 'cosine-anneal':
             scheduler = lr_scheduler.CosineAnnealingLR(
                 optimizer, T_max=args.OPTIM.lr_tmax, eta_min=args.OPTIM.lr * 0.01, last_epoch=-1)
@@ -335,7 +340,7 @@ def train():
             if scheduler is not None:
                 if args.OPTIM.lr_scheduler == 'patience':
                     scheduler.step(score)
-                elif args.OPTIM.lr_scheduler == "multi-step":
+                elif args.OPTIM.lr_scheduler in ("multi-step", "step"):
                     scheduler.step()
                 else:
                     raise NotImplementedError

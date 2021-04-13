@@ -26,6 +26,7 @@ def LDAloss(H, label, lamb=0.1, epsilon=1, need_v=False):
         S_w += H_i_bar.t().matmul(H_i_bar) / (N_i - 1) / len(unique_labels)
     S_w_reg = (S_w + lamb * torch.diag(torch.Tensor().new_ones((C),
                                                                device=H.device, dtype=H.dtype)))
+    # print(S_w_reg.shape, H.shape)
     temp = S_w_reg.pinverse().matmul(S_t - S_w)
     w, v = torch.symeig(temp, eigenvectors=True)
 
@@ -101,7 +102,7 @@ def lda_prediction(train_h, train_l, test_h, test_l, v):
     return logit
 
 
-def lda_prediction_main(train_feats, train_labels, test_feats=None, test_labels=None, need_v=False):
+def lda_prediction_main(train_feats, train_labels, test_feats=None, test_labels=None, need_v=False, lamb=0.001):
     if test_feats is None:
         splitted_train_feats, new_train_labels, splitted_test_feats, new_test_labels = split_and_get_data(
             train_feats=train_feats,
@@ -111,7 +112,7 @@ def lda_prediction_main(train_feats, train_labels, test_feats=None, test_labels=
         train_v = LDAloss(
             H=splitted_train_feats,
             label=new_train_labels,
-            lamb=0.001,
+            lamb=lamb,
             need_v=True
         )
 
@@ -126,7 +127,7 @@ def lda_prediction_main(train_feats, train_labels, test_feats=None, test_labels=
         train_v = LDAloss(
             H=splitted_test_feats,
             label=new_test_labels,
-            lamb=0.001,
+            lamb=lamb,
             need_v=True
         )
 
@@ -150,7 +151,7 @@ def lda_prediction_main(train_feats, train_labels, test_feats=None, test_labels=
         v = LDAloss(
             H=train_feats,
             label=train_labels,
-            lamb=0.001,
+            lamb=lamb,
             need_v=True
         )
         logit = lda_prediction(

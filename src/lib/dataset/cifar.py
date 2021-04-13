@@ -142,6 +142,15 @@ class Cifar10(data.Dataset):
         # transpose from (C, W, H) -> (W, H, C)
         data = data.transpose(1, 2, 0)
 
+        if self.c_aug is not None:
+            data = self.c_aug(image=data)["image"]
+
+        if self.s_aug is not None:
+            if self.s_aug.__class__.__name__ == "function":
+                data, _ = self.s_aug(data, p=0.5)
+            else:
+                data = self.s_aug(data)
+
         data = self.trans(data)
 
         # print(self.dataset["meta_data"], label)

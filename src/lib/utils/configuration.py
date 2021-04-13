@@ -56,6 +56,7 @@ __C.OPTIM.lr_patience = 5
 __C.OPTIM.lr_min = 1e-6
 __C.OPTIM.lr_cooldown = 1
 __C.OPTIM.lr_tmax = 1
+__C.OPTIM.lr_step_size = 1
 
 __C.LOG.save_dir = "../logs"
 __C.LOG.train_print_iter = 200

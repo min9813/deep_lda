@@ -152,16 +152,26 @@ def train():
             msglogger.debug("{}:{}".format(key, value))
 
     if args.MODEL.network == "resnet18":
-        net = network.resnet.resnet18()
+        net = network.resnet.resnet18(output_dim=args.MODEL.output_dim)
     elif args.MODEL.network == "original":
-        net = network.original.CNNModel()
+        net = network.original.CNNModel(output_dim=args.MODEL.output_dim)
     else:
         raise NotImplementedError(args.MODEL.network)
+
+    msg = "##### MODEL ARCHITECTURE #####"
+    msglogger.info(msg)
+    msglogger.info(str(net))
+    msglogger.info("#" * len(msg))
 
     head = network.head.Head(
         feature_dim=net.output_dim,
         n_classes=len(trn_dataset.class_list)
     )
+
+    msg = "##### HEAD ARCHITECTURE #####"
+    msglogger.info(msg)
+    msglogger.info(str(head))
+    msglogger.info("#" * len(msg))
 
     if args.MODEL.embedding == "lda":
         embedder = embedding.lda.LDAloss
@@ -286,16 +296,18 @@ def train():
                     args=args,
                     logger=val_logger
                 )
-                lda_scores = evaluation.lda_eval.lda_eval(
-                    x_data=trn_logits,
-                    y_data=trn_labels,
-                    x_test=val_logits,
-                    y_test=val_labels,
-                    args=args,
-                    logger=val_logger
-                )
-                for key, score in lda_scores.items():
-                    val_info["{}_lda".format(key)] = score
+
+                if embedder is not None:
+                    lda_scores = evaluation.lda_eval.lda_eval(
+                        x_data=trn_logits,
+                        y_data=trn_labels,
+                        x_test=val_logits,
+                        y_test=val_labels,
+                        args=args,
+                        logger=val_logger
+                    )
+                    for key, score in lda_scores.items():
+                        val_info["{}_lda".format(key)] = score
                     
                 val_info.update(scores)
 

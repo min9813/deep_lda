@@ -69,6 +69,7 @@ __C.MODEL.resume = False
 __C.MODEL.delete_old = True
 __C.MODEL.network = ""
 __C.MODEL.embedding = "no"
+__C.MODEL.output_dim = 128
 
 __C.TEST.metric_name = ""
 __C.TEST.mode = "normal"

@@ -297,7 +297,7 @@ def train():
                     logger=val_logger
                 )
 
-                if embedder is not None:
+                if embedder is not None or args.TEST.lda_eval:
                     lda_scores = evaluation.lda_eval.lda_eval(
                         x_data=trn_logits,
                         y_data=trn_labels,

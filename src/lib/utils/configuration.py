@@ -77,6 +77,7 @@ __C.TEST.batch_size = 10000
 __C.TEST.neighbor_k = 100
 __C.TEST.test_logit_scale = 4
 __C.TEST.has_same = False
+__C.TEST.lda_eval = False
 
 __C.debug = True
 __C.run_mode = "train"
